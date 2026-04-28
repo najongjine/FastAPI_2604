@@ -1,17 +1,15 @@
 from fastapi import FastAPI
+from routers import test_router
 import uvicorn
 
 app = FastAPI()
+
+app.include_router(test_router.router)
 
 
 @app.get("/")
 def home():
     return {"message": "FastAPI 실행 성공"}
-
-
-@app.get("/hello")
-def hello():
-    return {"message": "hello"}
 
 
 if __name__ == "__main__":
