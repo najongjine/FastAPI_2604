@@ -8,7 +8,10 @@ router = APIRouter(
 
 @router.get("/")
 def test_home():
-    return {"message": "Test Router Home"}
+    try:
+        return CommonResponse(success=True)
+    except Exception as e:
+        return CommonResponse(success=False, msg=str(e))
 
 @router.get("/info")
 def test_info(name: str = "", age: int = 0):

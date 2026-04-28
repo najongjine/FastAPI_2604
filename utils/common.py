@@ -7,3 +7,4 @@ class CommonResponse(BaseModel, Generic[T]):
     success: bool=True
     data: Optional[T] = None
     msg: str = ""
+
