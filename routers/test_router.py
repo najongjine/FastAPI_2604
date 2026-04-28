@@ -1,15 +1,10 @@
-from fastapi import APIRouter
-from pydantic import BaseModel
+from fastapi import APIRouter, Form
 from utils.common import CommonResponse
 
 router = APIRouter(
     prefix="/test",
     tags=["test"]
 )
-
-class TestPostRequest(BaseModel):
-    username: str = ""
-    password: str = ""
 
 @router.get("/")
 def test_home():
@@ -43,12 +38,12 @@ def mytest(username: str = "", password: str=""):
         return CommonResponse(success=False, msg=str(e))
 
 @router.post("/mytest")
-def post_mytest(request: TestPostRequest):
+def post_mytest(username: str = Form(""), password: str = Form("")):
     try:
         # business logic
         data = {
-            "username": request.username,
-            "password": request.password
+            "username": username,
+            "password": password
         }
         return CommonResponse(success=True, data=data)
     except Exception as e:
