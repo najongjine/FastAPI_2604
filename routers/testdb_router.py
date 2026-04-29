@@ -89,7 +89,6 @@ def delete_test(id: int = Form(0)):
                 cur.execute("""
                 DELETE FROM t_test
                 WHERE id = %s
-                RETURNING id, name
                 """, [id])
 
                 conn.commit()
