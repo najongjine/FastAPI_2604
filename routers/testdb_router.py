@@ -28,3 +28,21 @@ def select_now():
         return CommonResponse(success=True, data=data)
     except Exception as e:
         return CommonResponse(success=False, msg=str(e))
+
+@router.get("/select_test")
+def select_now(id: int = 0):
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(f"""
+                SELECT
+                *
+                FROM t_test
+                WHERE id = %s
+                """, [id])
+                row = cur.fetchall()
+
+        data = row
+        return CommonResponse(success=True, data=data)
+    except Exception as e:
+        return CommonResponse(success=False, msg=str(e))
