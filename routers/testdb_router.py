@@ -34,13 +34,44 @@ def select_now(id: int = 0):
     try:
         with get_connection() as conn:
             with conn.cursor() as cur:
-                cur.execute(f"""
+                cur.execute("""
                 SELECT
                 *
                 FROM t_test
                 WHERE id = %s
                 """, [id])
                 row = cur.fetchall()
+
+        data = row
+        return CommonResponse(success=True, data=data)
+    except Exception as e:
+        return CommonResponse(success=False, msg=str(e))
+
+@router.post("/upsert_test")
+def upsert_test(id: int = Form(0), name: str = Form("")):
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                if id <= 0:
+                    cur.execute("""
+                    INSERT INTO t_test (name)
+                    VALUES (%s)
+                    RETURNING id, name
+                    """, [name])
+                else:
+                    cur.execute("""
+                    UPDATE t_test
+                    SET name = %s
+                    WHERE id = %s
+                    RETURNING id, name
+                    """, [name, id])
+
+                row = cur.fetchone()
+                if not row:
+                    conn.rollback()
+                    return CommonResponse(success=False, msg="data not found")
+
+                conn.commit()
 
         data = row
         return CommonResponse(success=True, data=data)
