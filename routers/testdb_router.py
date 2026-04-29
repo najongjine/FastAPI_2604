@@ -73,7 +73,30 @@ def upsert_test(id: int = Form(0), name: str = Form("")):
 
                 conn.commit()
 
-        data = row
+        data = {
+            "id": row[0],
+            "name": row[1]
+        }
+        return CommonResponse(success=True, data=data)
+    except Exception as e:
+        return CommonResponse(success=False, msg=str(e))
+
+@router.post("/delete_test")
+def delete_test(id: int = Form(0)):
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                DELETE FROM t_test
+                WHERE id = %s
+                RETURNING id, name
+                """, [id])
+
+                conn.commit()
+
+        data = {
+            "msg" : "delete success"
+        }
         return CommonResponse(success=True, data=data)
     except Exception as e:
         return CommonResponse(success=False, msg=str(e))
