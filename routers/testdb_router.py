@@ -38,8 +38,13 @@ def select_now(id: int = 0):
                 SELECT
                 *
                 FROM t_test
-                WHERE id = %s
-                """, [id])
+                WHERE
+                    CASE
+                        WHEN %s != 0 THEN id = %s
+                        ELSE TRUE
+                    END
+                LIMIT 1000
+                """, [id, id])
                 row = cur.fetchall()
 
         data = row
