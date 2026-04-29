@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Form
+from fastapi import APIRouter, Form, File, UploadFile
 from utils.common import CommonResponse
 
 router = APIRouter(
@@ -44,6 +44,20 @@ def post_mytest(username: str = Form(""), password: str = Form("")):
         data = {
             "username": username,
             "password": password
+        }
+        return CommonResponse(success=True, data=data)
+    except Exception as e:
+        return CommonResponse(success=False, msg=str(e))
+
+@router.post("/upload")
+async def upload_file(file: UploadFile = File(...)):
+    try:
+        # business logic
+        contents = await file.read()
+        data = {
+            "filename": file.filename,
+            "content_type": file.content_type,
+            "size": len(contents)
         }
         return CommonResponse(success=True, data=data)
     except Exception as e:
