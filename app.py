@@ -1,10 +1,11 @@
 from fastapi import FastAPI
-from routers import test_router
+from routers import test_router, testdb_router
 import uvicorn
 
 app = FastAPI()
 
 app.include_router(test_router.router)
+app.include_router(testdb_router.router)
 
 
 @app.get("/")
